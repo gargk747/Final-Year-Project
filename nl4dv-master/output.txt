@@ -1,0 +1,2 @@
+select * from movies-w-year where Worldwide Gross>100000000.0 and Genre IN [Action , Adventure]
+Worldwide Gross , Production Budget , Content Rating , Rotten Tomatoes Rating , IMDB Rating , Genre ,
