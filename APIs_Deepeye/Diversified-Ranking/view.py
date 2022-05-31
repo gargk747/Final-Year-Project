@@ -1,10 +1,11 @@
 import math
+# from typing_extensions import Self
 import numpy as np
 from functools import reduce
 np.seterr(divide='ignore',invalid='ignore')
-from numpy import corrcoef
+from numpy import corrcoef, double
 from features import Type
-
+import matplotlib.pyplot as plt
 
 class Chart(object):
     bar=0
@@ -149,7 +150,28 @@ class View(object):
             y_data = y_data.replace('L', '')
         data ='{"order1":' + str(order) +  ',"describe":"' + self.table.describe + '","x_name":"' + self.fx.name + '","y_name":"' + self.fy.name + '","chart":"' + Chart.chart[self.chart] + '","classify":' + classify + ',"x_data":' + x_data + ',"y_data":' + y_data + '}'
         #data = 'score:' + str(round(self.score, 2)) + '\tM:' + str(round(self.M, 2)) + '\tQ:' + str(round(self.Q, 2)) + '\tW:' + str(round(self.W, 2)) + '{"order":' + str(order) + ',"describe":"' + self.table.describe + '","x_name":"' + self.fx.name + '","y_name":"' + self.fy.name + '","chart":"' + Chart.chart[self.chart] + '","classify":' + classify + ',"x_data":' + x_data + ',"y_data":' + y_data + '}'
-        print(data)
+        print(x_data)
+        print("------------------------------------------")
+        print(y_data)
+        x_data=str(x_data)[3:-3]
+        x_data=x_data.split('", "')
+        x_data=list(x_data)
+
+        y_data=str(y_data)[2:-2]
+        y_data=y_data.split(', ')
+        y_data=map(double,y_data)
+        y_data=list(y_data)
+
+        fig=plt.figure()
+        plt.title(self.table.describe)
+        if(Chart.chart[self.chart] == "line"):
+            plt.plot(x_data,y_data,color='maroon')
+        elif(Chart.chart[self.chart]== "bar"):
+            plt.bar(x_data,y_data,color='maroon',width = 0.5)
+        plt.xlabel(self.fx.name)
+        plt.ylabel(self.fy.name)
+        plt.grid()
+        plt.show()
 
 
 

@@ -8,6 +8,7 @@ from table import Table
 from myGraph import myGraph
 from features import Type
 
+
 #read data from database
 dbArgs = sys.argv[1:6]
 # print dbArgs
@@ -48,6 +49,9 @@ G=myGraph(instance.view_num)
 for i in range(instance.view_num):
     view=instance.tables[instance.views[i].table_pos].views[instance.views[i].view_pos]
     G.addNode(view)
+
+    
+
 G.getSim()
 result=G.getTopK(instance.view_num)
 order=1

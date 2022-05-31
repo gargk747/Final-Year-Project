@@ -1,0 +1,2 @@
+select * from happiness where Happiness_Score>5.0
+Region , Happiness_Score , AVG(Happiness_Score)

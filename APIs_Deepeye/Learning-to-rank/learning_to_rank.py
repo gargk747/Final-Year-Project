@@ -18,6 +18,9 @@ import matplotlib.pyplot as plt
 #read data from database
 dbArgs = sys.argv[1:6]
 # print dbArgs
+print("------------------------------------------")
+print(sys.argv[7])
+print("------------------------------------------")
 instance=Instance(sys.argv[6])
 instance.addTable(Table(instance,False,'',''))
 conn=MySQLdb.connect(host=dbArgs[0],port=int(dbArgs[1]),user=dbArgs[2],passwd=dbArgs[3],db=dbArgs[4],charset='utf8')
@@ -27,7 +30,9 @@ for i in range(0,instance.column_num):
     instance.tables[0].names.append(sys.argv[8+i])
     instance.tables[0].types.append(Type.getType(sys.argv[8+i+instance.column_num].lower()))
 instance.tables[0].origins=[i for i in range(instance.tables[0].column_num)]
-instance.tuple_num=instance.tables[0].tuple_num=cur.execute(sys.argv[7])
+file1=open(r'C:\Users\gargk\Desktop\MNIT\Final Year Project\DeepEye\APIs_Deepeye\input.txt','r')
+file1.seek(0)
+instance.tuple_num=instance.tables[0].tuple_num=cur.execute(file1.readline())
 instance.tables[0].D=list(map(list,cur.fetchall()))
 cur.close()
 conn.close()
@@ -53,6 +58,7 @@ instance.getScore()
 #cur.execute('create table `'+new_table_name+'`(id int,data JSON)')
 order1=order2=1
 old_view=''
+allVis = []
 for i in range(instance.view_num):
     view=instance.tables[instance.views[i].table_pos].views[instance.views[i].view_pos]
     classify = str([])
@@ -76,7 +82,6 @@ for i in range(instance.view_num):
         order1 += 1
     data = '{"order1":' + str(order1) +',"describe":"' + view.table.describe + '","x_name":"' + view.fx.name + '","y_name":"' + view.fy.name + '","chart":"' + \
            Chart.chart[view.chart] + '","classify":' + classify + ',"x_data":' + x_data + ',"y_data":' + y_data + '}'
-    print (data)
     x_data=str(x_data)[3:-3]
     x_data=x_data.split('", "')
     x_data=list(x_data)
@@ -86,6 +91,9 @@ for i in range(instance.view_num):
     y_data=map(double,y_data)
     y_data=list(y_data)
 
+    allVis.append([x_data,y_data])
+    print(view.fx.name)
+    print(view.fy.name)
     fig=plt.figure()
     plt.title(view.table.describe)
     if(Chart.chart[view.chart] == "line"):
@@ -96,6 +104,9 @@ for i in range(instance.view_num):
     plt.ylabel(view.fy.name)
     plt.grid()
     plt.show()
+    # plt.show(block=False)
+    # plt.pause(1)
+    # plt.close()
 
     old_view = view
 
