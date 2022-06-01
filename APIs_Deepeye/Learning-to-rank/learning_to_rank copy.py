@@ -16,7 +16,6 @@ from features import Type
 import matplotlib.pyplot as plt
 import pandas as pd
 import pdvega
-import ast
 
 
 #read data from database
@@ -60,8 +59,9 @@ order1=order2=1
 old_view=''
 allVis = []
 AttributeStr=file1.readline()
-AttributeStr = ast.literal_eval(AttributeStr)
-
+Attribute=AttributeStr.split(" , ")
+print(Attribute)
+testAttr=Attribute
 for i in range(instance.view_num):
     view=instance.tables[instance.views[i].table_pos].views[instance.views[i].view_pos]
     classify = str([])
@@ -83,13 +83,18 @@ for i in range(instance.view_num):
     if old_view:
         order2 = 1
         order1 += 1
-
     data = '{"order1":' + str(order1) +',"describe":"' + view.table.describe + '","x_name":"' + view.fx.name + '","y_name":"' + view.fy.name + '","chart":"' + \
            Chart.chart[view.chart] + '","classify":' + classify + ',"x_data":' + x_data + ',"y_data":' + y_data + '}'
-    
-    # print(data)
+    x_data=str(x_data)[3:-3]
+    x_data=x_data.split('", "')
+    x_data=list(x_data)
 
-    
+    y_data=str(y_data)[2:-2]
+    y_data=y_data.split(', ')
+    y_data=map(double,y_data)
+    y_data=list(y_data)
+
+    allVis.append([x_data,y_data])
     print(view.fx.name)
     print(view.fy.name)
     newFx=view.fx.name
@@ -101,52 +106,20 @@ for i in range(instance.view_num):
     
     if('(' in view.fy.name):
         newFy=view.fy.name[4:-1]
-    if([newFx,newFy] in AttributeStr):
+    if(newFx in Attribute and newFy in Attribute and newFx!=newFy):
         fig=plt.figure()
         plt.title(view.table.describe)
-        print(Chart.chart[view.chart])
         if(Chart.chart[view.chart] == "line"):
             plt.plot(x_data,y_data,color='maroon')
-
         elif(Chart.chart[view.chart]== "bar"):
-            x_data=str(x_data)[3:-2]
-            x_data=x_data.split('", "')
-            x_data=list(x_data)
-            # print(x_data)
-            # print(y_data)
-            y_data=str(y_data)[2:-2]
-            y_data=y_data.split(', ')
-            y_data=map(double,y_data)
-            y_data=list(y_data)
-            allVis.append([x_data,y_data])
             plt.bar(x_data,y_data,color='maroon',width = 0.5)
-            plt.xlabel(view.fx.name)
-            plt.ylabel(view.fy.name)
-        
-        elif(Chart.chart[view.chart]=='pie'):
-            # x_data = x_data[0]
-            # y_data = y_data[0]
-            x_data = x_data[2:-2]
-            y_data = y_data[2:-2]
-            x_data = list(x_data.split(","))
-            y_data = list(y_data.split(","))
-            # print("X",x_data, " ","y",y_data)
-            plt.pie(y_data,labels=x_data)
-        
-        elif(Chart.chart[view.chart]=='scatter'):
-            # plt.scatter(y_data,labels=x_data)
-            continue
-        
-        
+        plt.xlabel(view.fx.name)
+        plt.ylabel(view.fy.name)
         plt.grid()
         plt.show()
     # plt.show(block=False)
     # plt.pause(1)
     # plt.close()
-
-    # for i in AttributeStr:
-    #     if(len(i==3)):
-    #         plt.p
 
     old_view = view
 
