@@ -32,6 +32,11 @@ for i in range(0,instance.column_num):
     instance.tables[0].names.append(sys.argv[8+i])
     instance.tables[0].types.append(Type.getType(sys.argv[8+i+instance.column_num].lower()))
 instance.tables[0].origins=[i for i in range(instance.tables[0].column_num)]
+<<<<<<< HEAD
+=======
+file1=open(r'REFERENCE LINK','r')
+file1.seek(0)
+>>>>>>> a33f330f246eb87c656b7e26fd573c5339ab2200
 instance.tuple_num=instance.tables[0].tuple_num=cur.execute(file1.readline())
 instance.tables[0].D=list(map(list,cur.fetchall()))
 cur.close()
