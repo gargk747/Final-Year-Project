@@ -6,7 +6,7 @@ from importlib import reload
 import importlib
 from xml.dom.minidom import Attr
 
-from numpy import double
+from numpy import angle, double
 importlib.reload(sys)
 import MySQLdb
 from instance import Instance
@@ -17,6 +17,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pdvega
 import ast
+
+from mpl_toolkits.mplot3d import axes3d
+import numpy as np
+from matplotlib import style
+style.use('ggplot')
 
 
 #read data from database
@@ -32,15 +37,10 @@ for i in range(0,instance.column_num):
     instance.tables[0].names.append(sys.argv[8+i])
     instance.tables[0].types.append(Type.getType(sys.argv[8+i+instance.column_num].lower()))
 instance.tables[0].origins=[i for i in range(instance.tables[0].column_num)]
-<<<<<<< HEAD
-=======
-file1=open(r'REFERENCE LINK','r')
-file1.seek(0)
->>>>>>> a33f330f246eb87c656b7e26fd573c5339ab2200
+
 instance.tuple_num=instance.tables[0].tuple_num=cur.execute(file1.readline())
 instance.tables[0].D=list(map(list,cur.fetchall()))
-cur.close()
-conn.close()
+
 
 #if table == none ===> exit
 if len(list(instance.tables[0].D))==0:
@@ -92,11 +92,11 @@ for i in range(instance.view_num):
     data = '{"order1":' + str(order1) +',"describe":"' + view.table.describe + '","x_name":"' + view.fx.name + '","y_name":"' + view.fy.name + '","chart":"' + \
            Chart.chart[view.chart] + '","classify":' + classify + ',"x_data":' + x_data + ',"y_data":' + y_data + '}'
     
-    print(data)
+    # print(data)
 
     
-    print(view.fx.name)
-    print(view.fy.name)
+    # print(view.fx.name)
+    # print(view.fy.name)
     newFx=view.fx.name
     newFy=view.fy.name
 
@@ -107,10 +107,13 @@ for i in range(instance.view_num):
     if('(' in view.fy.name):
         newFy=view.fy.name[4:-1]
     if([newFx,newFy] in AttributeStr):
-        fig=plt.figure()
         plt.title(view.table.describe)
-        print(Chart.chart[view.chart])
         if(Chart.chart[view.chart] == "line"):
+            plt.xlabel(view.fx.name)
+            plt.ylabel(view.fy.name)
+            print(view.fx.name)
+            print(view.fy.name)
+            plt.title(view.table.describe)
             plt.plot(x_data,y_data,color='maroon')
 
         elif(Chart.chart[view.chart]== "bar"):
@@ -124,9 +127,12 @@ for i in range(instance.view_num):
             y_data=map(double,y_data)
             y_data=list(y_data)
             allVis.append([x_data,y_data])
-            plt.bar(x_data,y_data,color='maroon',width = 0.5)
             plt.xlabel(view.fx.name)
             plt.ylabel(view.fy.name)
+            print(view.fx.name)
+            print(view.fy.name)
+            plt.title(view.table.describe)
+            plt.bar(x_data,y_data,color='maroon',width = 0.5)
         
         elif(Chart.chart[view.chart]=='pie'):
             # x_data = x_data[0]
@@ -135,14 +141,93 @@ for i in range(instance.view_num):
             y_data = y_data[2:-2]
             x_data = list(x_data.split(","))
             y_data = list(y_data.split(","))
+            plt.xlabel(view.fx.name)
+            plt.ylabel(view.fy.name)
+            print(view.fx.name)
+            print(view.fy.name)
+            plt.title(view.table.describe)
             # print("X",x_data, " ","y",y_data)
             plt.pie(y_data,labels=x_data)
         
         elif(Chart.chart[view.chart]=='scatter'):
-            # plt.scatter(y_data,labels=x_data)
-            continue
-        
-        
+            x_data=str(x_data)
+            x_data=x_data.replace("[","")
+            x_data=x_data.replace("]","")
+            x_data=x_data.split(', ')
+            x_data=list(x_data)
+            x_data=[float(i) for i in x_data]
+            
+            y_data=str(y_data)
+            y_data=y_data.replace("[","")
+            y_data=y_data.replace("]","")
+            y_data=y_data.split(', ')
+            y_data=list(y_data)
+            y_data=[float(i) for i in y_data]
+            plt.xlabel(view.fx.name)
+            plt.ylabel(view.fy.name)
+            print(view.fx.name)
+            print(view.fy.name)
+            plt.title(view.table.describe)
+            plt.scatter(x_data, y_data, c ="blue")
+        for i in AttributeStr:
+            if(i[0]==newFx and i[1]==newFy and len(i)==3):
+                fig=plt.figure(figsize = (10, 7))
+                plt.title(view.table.describe)
+                ax1 = plt.axes(projection ="3d")
+                ax1.set_xlabel(view.fx.name)
+                ax1.set_ylabel(view.fy.name)
+                query = "SELECT `" + "` , `".join(i) + "` FROM " + sys.argv[6] +" Group BY `"+ i[1] + "` , `"+ i[2]+"`"
+                cur.execute(query)
+                dx3 =list(map(list,cur.fetchall()))
+                xData=[]
+                yData=[]
+                zData=[]
+                for j in dx3:
+                    xData.append(j[0])
+                    yData.append(j[1])
+                    zData.append(j[2])
+                # print("----------------x------------\n")
+                # print(xData)
+                # print("-----------y---------------\n")
+                # print(yData)
+                # print("--------z---------------------\n")
+                # print(zData)
+                z = np.zeros(len(xData))
+                dx1 = np.ones(len(yData))
+                dx2 = np.ones(len(yData))
+
+                # dz = []
+                # for j in dx3:
+                #     dz.append(j[0])
+                # print(dz,"AAAAAA")
+                newXdata = []
+                newYdata = []
+                newZdata = []
+                if(isinstance(xData[0],str)):
+                    newXdata = list(set(xData))
+                    for i in range(len(xData)):
+                        xData[i] = newXdata.index(xData[i])
+                if(isinstance(yData[0],str)):
+                    newYdata = list(set(yData))
+                    for i in range(len(yData)):
+                        yData[i] = newYdata.index(yData[i])
+                if(isinstance(zData[0],str)):
+                    newZdata = list(set(zData))
+                    for i in range(len(zData)):
+                        zData[i] = newZdata.index(zData[i])
+                ax1.scatter(xData, yData, zData, color="green")
+                if(len(newXdata)!=0):
+                    ax1.set(xticks = range(len(newXdata)), xticklabels = newXdata)
+                if(len(newYdata)!=0):
+                    ax1.set(yticks = range(len(newYdata)), yticklabels = newYdata)
+                if(len(newZdata)!=0):
+                    ax1.set(zticks = range(len(newZdata)), zticklabels = newZdata)     
+                print(view.fx.name)
+                print(view.fy.name)
+                
+                             
+                plt.show()
+
         plt.grid()
         plt.show()
     # plt.show(block=False)
@@ -154,6 +239,9 @@ for i in range(instance.view_num):
     #         plt.p
 
     old_view = view
+
+cur.close()
+conn.close()
 
 
 
