@@ -92,7 +92,7 @@ for i in range(instance.view_num):
     data = '{"order1":' + str(order1) +',"describe":"' + view.table.describe + '","x_name":"' + view.fx.name + '","y_name":"' + view.fy.name + '","chart":"' + \
            Chart.chart[view.chart] + '","classify":' + classify + ',"x_data":' + x_data + ',"y_data":' + y_data + '}'
     
-    # print(data)
+    print(data)
 
     
     # print(view.fx.name)
