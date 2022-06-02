@@ -47,7 +47,7 @@ dependency_parser_config = {'name': 'corenlp','model': os.path.join("examples","
 
 # Initialize NL4DV and set the above configurations
 nl4dv_instance = NL4DV(verbose=False)
-nl4dv_instance.set_data(data_url="https://raw.githubusercontent.com/gargk747/FYP-DataSet/master/movies-w-year.csv")
+nl4dv_instance.set_data(data_url=data_url)
 nl4dv_instance.set_alias_map(alias_url=alias_url)
 # nl4dv_instance.set_label_attribute(label_attribute=label_attribute)
 # nl4dv_instance.set_ignore_words(ignore_words=ignore_words)
