@@ -106,7 +106,12 @@ for i in range(instance.view_num):
     
     if('(' in view.fy.name):
         newFy=view.fy.name[4:-1]
+    print("-------------------------------------------------")
+    print(newFx,newFy)
+    print(AttributeStr)
+    print("-------------------------------------------------")
     if([newFx,newFy] in AttributeStr):
+        
         plt.title(view.table.describe)
         if(Chart.chart[view.chart] == "line"):
             plt.xlabel(view.fx.name)
@@ -129,6 +134,7 @@ for i in range(instance.view_num):
             allVis.append([x_data,y_data])
             plt.xlabel(view.fx.name)
             plt.ylabel(view.fy.name)
+            plt.rc('font', size=8)  
             print(view.fx.name)
             print(view.fy.name)
             plt.title(view.table.describe)
@@ -145,11 +151,13 @@ for i in range(instance.view_num):
             plt.ylabel(view.fy.name)
             print(view.fx.name)
             print(view.fy.name)
+            plt.pie(y_data, labels=x_data, autopct='%1.1f%%', shadow=True, startangle=90)
+            plt.axis('equal')
             plt.title(view.table.describe)
             # print("X",x_data, " ","y",y_data)
-            plt.pie(y_data,labels=x_data)
-        
+            
         elif(Chart.chart[view.chart]=='scatter'):
+            print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
             x_data=str(x_data)
             x_data=x_data.replace("[","")
             x_data=x_data.replace("]","")

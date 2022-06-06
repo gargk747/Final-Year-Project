@@ -8,7 +8,8 @@ class Chart(object):
     line=1
     scatter=2
     pie=3
-    chart=['bar','line','scatter','pie']
+    heatmap=4
+    chart=['bar','line','scatter','pie','heatmap']
 
 
 class View(object):

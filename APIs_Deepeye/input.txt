@@ -1,2 +1,2 @@
-Select * from movies
-[['Running Time', 'IMDB Rating'], ['Release Year', 'Worldwide Gross', 'Genre'], ['Genre', 'Worldwide Gross'], ['Genre', 'Worldwide Gross', 'Release Year']]
+Select * from mnit
+[['CG', 'Package'], ['Package', 'CG']]

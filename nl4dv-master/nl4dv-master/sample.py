@@ -9,7 +9,7 @@ import json
 import altair as alt
 import pandas as pd
 # -------------------- File INPUT ---------------------------
-table_name="movies"
+table_name="mnit"
 data_url = os.path.join(".", "examples", "assets", "data", "")
 data_url = data_url+table_name+".csv"
 alias_url = os.path.join(".", "examples", "assets", "aliases", "")
@@ -19,7 +19,7 @@ print("\nAlias: \n" + alias_url)
 
 # -------------------- Special attributes / tokens ---------------------------
 # label_attribute = "Title"
-# ignore_words = ['movie']
+ignore_words = ['Students','Student','students','student']
 # print("\nLabel Attribute: \n" + label_attribute)
 # print("\nIgnore Tokens: \n" + str(ignore_words))
 
@@ -29,15 +29,26 @@ print("\nAlias: \n" + alias_url)
 # print("\nAttribute Datatypes: \n" + str(attribute_datatypes))
 
 # -------------------- QUERY INPUT ---------------------------
-query = "Show average gross for different genres over the years"
+# 
+# query = "Show average gross for different genres over the years"
 # query = "Create a histogram showing distribution of IMDB ratings"
-# query = "Show worldwide gross for genres Action, Adventure, Drama and Horror"
+# query = "worlwide gross for geners Action, Adventure, Drama and Horror"
 # query = "Show total gross across genres for science fiction and fantasy movies"
 # query = "Relationship between budget and rating"
 # query = "Show the relationship between budget and rating for Action and Adventure movies that grossed over 100M"
 # query = "Show the regions having average happiness score greater than 5"
 # query = "show relationship between basement area and price where home type is duplex"
 # query= "Does the happiness score decrease over time"
+
+
+
+# query = "show average package for different branch for different genders"
+query = "relatinshp betwwen package and CG"
+# query = "is there any relationship between package and branch for computer Science, chemical, civil, electrical branches"
+
+
+
+
 print("\nQuery Input: \n" + query)
 
 # -------------------- Dependency Parser (CHOOSE ONE out of the below 3 configurations) ---------------------------
@@ -50,7 +61,7 @@ nl4dv_instance = NL4DV(verbose=False)
 nl4dv_instance.set_data(data_url=data_url)
 nl4dv_instance.set_alias_map(alias_url=alias_url)
 # nl4dv_instance.set_label_attribute(label_attribute=label_attribute)
-# nl4dv_instance.set_ignore_words(ignore_words=ignore_words)
+nl4dv_instance.set_ignore_words(ignore_words=ignore_words)
 # nl4dv_instance.set_attribute_datatype(attr_type_obj=attribute_datatypes)
 nl4dv_instance.set_dependency_parser(config=dependency_parser_config)
 
@@ -99,7 +110,12 @@ if(diff==0):
         for j in nl4dv_response['attributeMap']:
             if(i!=j):
                 finalAttributes.append([i,j])
-
+finallattr = []
+for i in finalAttributes:
+    if(len(i)==2):
+        finallattr.append([i[1],i[0]])
+for i in finalAttributes:
+    finallattr.append(i)
 
 taskMap = nl4dv_response['taskMap']
 finalSQLquery=baseSQL
@@ -129,12 +145,12 @@ if('filter' in taskMap):
 
 
 print(finalSQLquery)
-print(finalAttributes)
+print(finallattr)
 
 finalSQLquery=finalSQLquery+'\n'
 file1=open(r'C:\Users\gargk\Desktop\MNIT\Final Year Project\DeepEye\APIs_Deepeye\input.txt','w')
 file1.write(finalSQLquery)
-file1.write(str(finalAttributes))
+file1.write(str(finallattr))
 file1.close()
 
 # data = pd.read_csv(r"https://raw.githubusercontent.com/gargk747/FYP-DataSet/master/movies-w-year.csv")
